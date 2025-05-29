@@ -1,51 +1,68 @@
+import { Die } from './die.js';
+
+// Dice is now a utility class with static methods
 export class Dice {
-    constructor(id, el, value = '', selected = false, scored = false) {
-        this.id = id;
-        this.el = el;
-        this.value = value;
-        this.selected = selected;
-        this.resolved = false; // Track if the dice has been resolved
-        this.scored = scored;
+    // Initializes a new set of dice, keeping selected dice from the previous roll
+    static initAll(turn, existingDice = []) {
+        let dice = [];
+        let diceCount = 0;
+
+        if (existingDice.length > 0) {
+            // Keep only selected dice and mark them as resolved
+            dice = existingDice.filter(die => die.selected);
+            dice.forEach(die => die.resolved = true);
+        }
+
+        diceCount = 6 - dice.length;
+
+        for (let i = 0; i < diceCount; i++) {
+            const id = `dice-${i + 1}`;
+            const value = Math.floor(Math.random() * 6) + 1;
+            const dieObj = new Die(id, value, turn);
+            dice.push(dieObj);
+        }
+
+        dice.forEach(die => die.init());
+        return dice;
     }
 
-    init() {
-        this.el.addEventListener('click', () => {
-            this.select();
+    // Rolls all unselected dice in the array, returns a promise that resolves when all are done
+    static async rollDice(activeTurn) {
+        activeTurn.startNewRoll(); // Start a new roll for the turn
+        if(activeTurn.currentRoll.rollNumber > 1 && activeTurn.selectedDice.length === 0) {
+            alert('You must select at least one die to roll.');
+            return;
+        }
+        activeTurn.dice.forEach(die => {
+            die.show();
         });
-        this.show();
+        await Promise.all(activeTurn.dice.filter(die => !die.selected).map(die => die.roll()));
     }
 
-    select() {
-        this.el.classList.toggle('selected');
-        this.selected = !this.selected; // Toggle the selected state
-        if(!this.selected) {
-            this.scored = false; // Reset scored state if deselected
-            this.el.classList.remove('scored'); // Remove scored class if deselected
-        }
-        activeTurn.calcScore(); // Calculate score for the active player for the turn
+    // Returns only the selected dice from the array
+    static getSelected(diceArr) {
+        return diceArr.filter(die => die.selected);
     }
 
-    show() {
-        if(this.selected || this.resolved){
-            this.el.textContent = this.value;
-        }
+    // Returns only the unselected dice from the array
+    static getUnselected(diceArr) {
+        return diceArr.filter(die => !die.selected);
+    }
+
+    // Resets all dice in the array to their default state (not selected, not scored, not resolved)
+    static resetAll(diceArr) {
+        diceArr.forEach(die => {
+            die.selected = false;
+            die.scored = false;
+            die.resolved = false;
+            die.el.classList.remove('selected', 'scored');
+        });
+    }
+
+    // Updates the UI to show all dice in the array in the dice container
+    static updateUI(diceArr) {
         const diceContainer = document.getElementById('diceContainer');
-        diceContainer.appendChild(this.el);
+        diceContainer.innerHTML = '';
+        diceArr.forEach(die => die.show());
     }
-
-    roll() {
-        return new Promise(resolve => {
-            const rollDuration = Math.random() * 1000 + 500; // Random duration between 500ms and 1500ms
-            this.el.classList.add('realistic-roll-animation');
-            setTimeout(() => {
-                this.el.textContent = this.value; // Update the displayed value
-                this.el.classList.remove('realistic-roll-animation');
-                this.el.style.transform = 'rotate(0deg)'; // Reset rotation to 0
-                this.resolved = true; // Mark the dice as resolved
-                this.show(); // Show the dice after rolling
-                resolve(); // Resolve the promise when the roll is complete
-            }, rollDuration);
-        });
-    }
-
 }

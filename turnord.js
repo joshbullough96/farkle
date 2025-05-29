@@ -7,42 +7,24 @@ export class Turn {
         this.dice = dice || [];
         this.rolls = [];
         this.currentRoll = null;
-        this.selectedDice = [];
     }
-    
+
     async startTurn(player) {
         this.player = player;
-        this.resetTurn(); // Reset the turn state
         this.resetUI();
+        this.resetTurn();
         this.dice = Dice.initAll(this);
+        this.startNewRoll();
     }
-    
-    startNewRoll() {
-        // If there's a current roll, finalize its score before starting new roll
-        if (this.currentRoll) {
-            const score = this.currentRoll.score;
-            this.markDiceAsScored(); // Mark dice from previous roll as scored
-            this.turnScore += score; // Add the score to turn total
-        }
 
+    startNewRoll() {
         const rollNumber = this.rolls.length + 1;
         this.currentRoll = new Roll(rollNumber);
         this.rolls.push(this.currentRoll);
     }
-    
-    endTurn(farkle = false) {
-        if (farkle) {
-            this.player.tempScore = 0; // Reset temporary score
-            this.player.showScore();
-            alert('Farkle! You did not score any points this turn.');
-        }
-        else {
-            // Mark the final roll's dice as scored and add its score
-            if (this.currentRoll && this.currentRoll.score > 0) {
-                this.markDiceAsScored(); // Mark the dice as scored
-                this.turnScore += this.currentRoll.score;
-            }
 
+    endTurn(farkle = false) {
+        if (!farkle) {
             // Only add score to player's total if it wasn't a farkle
             if ((this.player.score + this.turnScore) < 500) {
                 this.player.tempScore = 0;
@@ -53,12 +35,7 @@ export class Turn {
                 this.player.score += this.turnScore;
             }
         }
-        
-        // Create a new turn for the next player
-        const nextPlayer = this.player.nextPlayer;
-        const newTurn = new Turn();
-        window.activeTurn = newTurn; // Update the global activeTurn reference
-        newTurn.startTurn(nextPlayer);
+        this.startTurn(this.player.nextPlayer);
     }
 
     resetTurn() {
@@ -98,11 +75,11 @@ export class Turn {
         let score = 0;
 
         // Calculate score based on the selected dice
-        this.selectedDice = this.dice.filter(dice => dice.selected && !dice.scored); // Only consider unscored selected dice that haven't been scored already.
+        const selectedDice = this.dice.filter(dice => dice.selected && !dice.scored); // Only consider unscored selected dice that haven't been scored already.
         
         //four of a kind with a pair
         // Check for four of a kind and a pair (with different values)
-        const valueCounts = this.selectedDice.reduce((acc, dice) => {
+        const valueCounts = selectedDice.reduce((acc, dice) => {
             acc[dice.value] = (acc[dice.value] || 0) + 1;
             return acc;
         }, {});
@@ -117,7 +94,7 @@ export class Turn {
         }
 
         //two triplets
-        const tripletCount = Object.values(this.selectedDice.reduce((acc, dice) => {
+        const tripletCount = Object.values(selectedDice.reduce((acc, dice) => {
             acc[dice.value] = (acc[dice.value] || 0) + 1;
             return acc;
         }, {})).filter(count => count >= 3).length;
@@ -128,7 +105,7 @@ export class Turn {
         }
 
         //three pairs
-        const paircount = Object.values(this.selectedDice.reduce((acc, dice) => {
+        const paircount = Object.values(selectedDice.reduce((acc, dice) => {
             acc[dice.value] = (acc[dice.value] || 0) + 1;
             return acc;
         }, {})).filter(count => count >= 2).length;
@@ -139,7 +116,7 @@ export class Turn {
         }
 
         //straight
-        const isStraight = this.selectedDice.length === 6 && this.selectedDice.every((dice, index) => dice.value === index + 1);
+        const isStraight = selectedDice.length === 6 && selectedDice.every((dice, index) => dice.value === index + 1);
         if (isStraight) {
             score += 1500; // Example score for a straight
             allowReroll();
@@ -147,7 +124,7 @@ export class Turn {
         }
 
         //six of a kind
-        const sixOfAKind = Object.values(this.selectedDice.reduce((acc, dice) => {
+        const sixOfAKind = Object.values(selectedDice.reduce((acc, dice) => {
             acc[dice.value] = (acc[dice.value] || 0) + 1; 
             return acc;
         }, {})).filter(count => count >= 6).length === 1;
@@ -158,7 +135,7 @@ export class Turn {
         }
 
         //five of a kind
-        const fiveOfAKind = Object.values(this.selectedDice.reduce((acc, dice) => {
+        const fiveOfAKind = Object.values(selectedDice.reduce((acc, dice) => {
             acc[dice.value] = (acc[dice.value] || 0) + 1; 
             return acc;
         }, {})).filter(count => count >= 5).length === 1;
@@ -172,33 +149,33 @@ export class Turn {
         }
 
         //three of a kind
-        const threeOfAKind = Object.values(this.selectedDice.reduce((acc, dice) => {
+        const threeOfAKind = Object.values(selectedDice.reduce((acc, dice) => {
             acc[dice.value] = (acc[dice.value] || 0) + 1;
             return acc;
         }, {})).some(count => count === 3);
         if (threeOfAKind) {
             //sixes
-            const sixCount = this.selectedDice.filter(dice => dice.value === 6).length;
+            const sixCount = selectedDice.filter(dice => dice.value === 6).length;
             if (sixCount >= 3) {
                 score += 600; // Example score for three sixes
             }
             //fives
-            const fiveCount = this.selectedDice.filter(dice => dice.value === 5).length;
+            const fiveCount = selectedDice.filter(dice => dice.value === 5).length;
             if (fiveCount >= 3) {
                 score += 500; // Example score for three sixes
             }
             //fours
-            const fourCount = this.selectedDice.filter(dice => dice.value === 4).length;
+            const fourCount = selectedDice.filter(dice => dice.value === 4).length;
             if (fourCount >= 3) {
                 score += 400; // Example score for three fours
             }
             //threes
-            const threeCount = this.selectedDice.filter(dice => dice.value === 3).length;
+            const threeCount = selectedDice.filter(dice => dice.value === 3).length;
             if (threeCount >= 3) {
                 score += 300; // Example score for three threes
             }
             //twos
-            const twoCount = this.selectedDice.filter(dice => dice.value === 2).length;
+            const twoCount = selectedDice.filter(dice => dice.value === 2).length;
             if (twoCount >= 3) {
                 score += 200; // Example score for three twos
             }        
@@ -206,15 +183,13 @@ export class Turn {
         }
 
         //ones
-        const oneCount = this.selectedDice.filter(dice => dice.value === 1).length;
-        if (oneCount > 4) {
-            score += (oneCount - 4) * 100; // Example score for ones
-        } else {
-            score += oneCount * 100; // Example score for one one
+        const oneCount = selectedDice.filter(dice => dice.value === 1).length;
+        if (oneCount >= 1) {
+            score += oneCount * 100; // Example score for ones
         }
 
         //fives
-        const fiveCount = this.selectedDice.filter(dice => dice.value === 5).length;
+        const fiveCount = selectedDice.filter(dice => dice.value === 5).length;
         if (fiveCount >= 3) {
             score += (fiveCount - 3) * 50; // Example score for fives
         } else {
@@ -223,22 +198,21 @@ export class Turn {
 
         return score;
 
-    }    
-    
+    }
+
     updateScore() {
         // Calculate score only for newly selected dice in the current roll
         const newScore = this.calcScore();
-        this.currentRoll.score = newScore;
-        this.player.tempScore = this.turnScore + newScore;
-        this.player.showScore();
-    }
-
-    markDiceAsScored() {
-        this.selectedDice.forEach(die => {
-            die.scored = true;
-            die.el.classList.add('scored'); // Add scored class to the die element
-        });
-        this.isScored = true;
+        
+        if (newScore > 0) {
+            // Mark the current roll's dice as scored
+            this.currentRoll.markDiceAsScored();
+            // Add the new score to the turn's total
+            this.turnScore += newScore;
+            // Update the player's temporary score display
+            this.player.tempScore = this.turnScore;
+            this.player.showScore();
+        }
     }
 
 }
