@@ -27,16 +27,11 @@ export class Dice {
     }
 
     // Rolls all unselected dice in the array, returns a promise that resolves when all are done
-    static async rollDice(activeTurn) {
-        activeTurn.startNewRoll(); // Start a new roll for the turn
-        if(activeTurn.currentRoll.rollNumber > 1 && activeTurn.selectedDice.length === 0) {
-            alert('You must select at least one die to roll.');
-            return;
-        }
-        activeTurn.dice.forEach(die => {
+    static async rollDice(diceArr) {
+        diceArr.forEach(die => {
             die.show();
         });
-        await Promise.all(activeTurn.dice.filter(die => !die.selected).map(die => die.roll()));
+        await Promise.all(diceArr.filter(die => !die.selected).map(die => die.roll()));
     }
 
     // Returns only the selected dice from the array

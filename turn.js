@@ -29,14 +29,22 @@ export class Turn {
         this.currentRoll = new Roll(rollNumber);
         this.rolls.push(this.currentRoll);
     }
+
+    async rollDice() {
+        this.startNewRoll();
+        if(this.currentRoll.rollNumber > 1 && this.selectedDice.length === 0) {
+            alert('You must select at least one die to roll.');
+            return;
+        }
+        await Dice.rollDice(this.dice);
+    }
     
     endTurn(farkle = false) {
         if (farkle) {
             this.player.tempScore = 0; // Reset temporary score
             this.player.showScore();
             alert('Farkle! You did not score any points this turn.');
-        }
-        else {
+        } else {
             // Mark the final roll's dice as scored and add its score
             if (this.currentRoll && this.currentRoll.score > 0) {
                 this.markDiceAsScored(); // Mark the dice as scored
@@ -53,12 +61,6 @@ export class Turn {
                 this.player.score += this.turnScore;
             }
         }
-        
-        // Create a new turn for the next player
-        const nextPlayer = this.player.nextPlayer;
-        const newTurn = new Turn();
-        window.activeTurn = newTurn; // Update the global activeTurn reference
-        newTurn.startTurn(nextPlayer);
     }
 
     resetTurn() {
@@ -90,8 +92,7 @@ export class Turn {
 
     calcScore() {
         const allowReroll = () => {
-            const cont = confirm('According to our calculations you can now reroll.');
-            if (!cont) return;
+            alert('Congrats you can roll again!');
             this.resetTurn(); // 'this' is correct here
         };
 

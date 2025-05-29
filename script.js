@@ -1,19 +1,26 @@
 // This is a basic JavaScript file template.
 // You can add your JavaScript code below.
-import { Player } from '/player.js'
-import { Turn } from '/turn.js'
-import { Dice } from '/dice.js'
-
-let activeTurn = null;
-const players = [];
-
-function newTurn(player){
-    activeTurn = new Turn(); // Create new turn and set as active
-    activeTurn.startTurn(player); // Start the turn for the player
-}
+import { Player } from '/player.js';
+import { Turn } from '/turn.js';
 
 function main() {
     if(window.location.hash === "#play") {
+
+        let activeTurn = null;
+        const players = [];
+
+        function rotateTurn(isFarkle = false) {
+            let player;
+            if (activeTurn) {
+                player = activeTurn.player.nextPlayer; // Get the current player
+                activeTurn.endTurn(isFarkle); // End the current turn if it exists
+            } else {
+                player = players[0]; // If no active turn, start with the first player
+            }
+            activeTurn = new Turn(); // Create new turn and set as active
+            activeTurn.startTurn(player); // Start the turn for the player
+        }
+
         const playerCount = parseInt(sessionStorage.getItem('playerCount'), 10); // Retrieve player count
         if (!playerCount || isNaN(playerCount)) {
             alert('Player count not set. Returning to startup.');
@@ -33,7 +40,26 @@ function main() {
         });
 
         // Start the first player's turn
-        newTurn(players[0]);
+        rotateTurn();
+
+        // Add event listener to the roll button
+        $('#rollBtn').click(async () => {
+            await activeTurn.rollDice();
+            const farkle = activeTurn.checkFarkle();
+            if(farkle) {
+                const isFarkle = true;
+                rotateTurn(isFarkle) // End the turn with Farkle
+                // Create a new turn for the next player
+                return;
+            }
+ 
+        });
+
+        // Add event listener to the roll button
+        $('#endTurnBtn').click(async () => {
+            rotateTurn()
+        });
+
     }
 }
 
@@ -57,23 +83,6 @@ $('#backBtn').click(() => {
     if(window.location.hash == "#startup") {
         window.location.href = "index.html"; 
     }
-});
-
-// Add event listener to the roll button
-$('#rollBtn').click(async () => {
-    $('#rollBtn').disabled = true; // Disable the button to prevent multiple clicks
-    await Dice.rollDice(activeTurn); // Roll the dice for the active turn
-    const farkle = activeTurn.checkFarkle(); // Check for Farkle condition
-    if (farkle) {
-        activeTurn.endTurn(true); // End the turn with Farkle
-        return;
-    }
-    $('#rollBtn').disabled = false; // Disable the button to prevent multiple clicks
-});
-
-// Add event listener to the roll button
-$('#endTurnBtn').click(async () => {
-    activeTurn.endTurn();
 });
 
 main();
