@@ -13,7 +13,11 @@ export class Turn {
     
     async startTurn(player) {
         if(this.player && this.player.isWinner) {
-            alert(`${this.player.name} has already won the game!`);
+            Swal.fire({
+                title: "Game Over",
+                text: `${this.player.name} has already won the game!`,
+                icon: "warning",
+            });
             return;
         }
         this.player = player;
@@ -41,7 +45,11 @@ export class Turn {
     
     startNewRoll() {
         if(this.player.isWinner) {
-            alert(`${this.player.name} has already won the game!`);
+            Swal.fire({
+                title: "Game Over",
+                text: `${this.player.name} has already won the game!`,
+                icon: "warning",
+            });
             return;
         }
         // If there's a current roll, finalize its score before starting new roll
@@ -70,8 +78,12 @@ export class Turn {
     }
 
     async rollDice() {
-        if(this.currentRoll && this.currentRoll.rollNumber > 1 && (this.selectedDice.length === 0 || this.selectedDice.every(die => die.scored))) {
-            alert('You must select at least one die to roll.');
+        if(this.currentRoll && this.currentRoll.rollNumber > 0 && (this.selectedDice.length === 0 || this.selectedDice.every(die => die.scored))) {
+            Swal.fire({
+                title: "Not allowed",
+                text: "You must select at least one die to roll.",
+                icon: "warning",
+            });
             return;
         }
         this.startNewRoll();
@@ -82,26 +94,37 @@ export class Turn {
         if (farkle) {
             this.player.tempScore = 0; // Reset temporary score
             this.player.showScore();
-            await Wait.delay(1000);
-            alert('Farkle! You did not score any points this turn.');
-        } else {
-            // Mark the final roll's dice as scored and add its score
-            if (this.currentRoll && this.currentRoll.score > 0) {
-                this.markDiceAsScored(); // Mark the dice as scored
-                this.turnScore += this.currentRoll.score;
-            }
+            Swal.fire({
+                title: "Farkle!",
+                text: "You did not score any points this turn.",
+                icon: "warning",
+            });
+            return;
+        } 
 
-            // Only add score to player's total if it wasn't a farkle
-            if ((this.player.score + this.turnScore) < 500) {
-                this.player.tempScore = 0;
-                this.player.score = 0;
-                this.player.showScore();
-                alert('You did not score enough points, your score has been reset to zero.');
-            } else {
-                this.player.score += this.turnScore;
-            }
+        // Mark the final roll's dice as scored and add its score
+        if (this.currentRoll && this.currentRoll.score > 0) {
+            this.markDiceAsScored(); // Mark the dice as scored
+            this.turnScore += this.currentRoll.score;
         }
+
+        // Only add score to player's total if it wasn't a farkle
+        if ((this.player.score + this.turnScore) < 500) {
+            this.player.tempScore = 0;
+            this.player.score = 0;
+            this.player.showScore();
+            Swal.fire({
+                title: "Uh Oh!",
+                text: "You did not score enough points, your score has been reset to zero.",
+                icon: "warning",
+            });
+            return;
+        }
+
+        //add the turn score to the player's total score if it is greater than 500 and not a farkle.
+        this.player.score += this.turnScore;
     }
+    
 
     resetTurn(reroll = false) {
         if (!reroll) {
@@ -148,7 +171,11 @@ export class Turn {
         // };
 
         const allowReroll = () => {
-            alert('Congrats you can roll again!');
+            Swal.fire({
+                title: "Nice job!",
+                text: "Congrats you get to roll again.",
+                icon: "success",
+            });
             const reroll = true;
             this.resetTurn(reroll); // 'this' is correct here
             this.resetUI(); // Reset the UI for the next roll

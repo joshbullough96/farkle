@@ -25,7 +25,11 @@ async function main() {
         const playerCount = parseInt(sessionStorage.getItem('playerCount'), 10); // Retrieve player count
         if (!playerCount || isNaN(playerCount)) {
             await Wait.delay(1000);
-            alert('Player count not set. Returning to startup.');
+            Swal.fire({
+                title: "Setup Error",
+                text: `Player count not set. Returning to startup.`,
+                icon: "info",
+            });
             window.location.href = "startup.html#startup";
             return;
         }
