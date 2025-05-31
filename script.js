@@ -10,11 +10,12 @@ async function main() {
         let activeTurn = null;
         const players = [];
 
-        function rotateTurn(isFarkle = false) {
+        async function rotateTurn(isFarkle = false) {
             let player;
             if (activeTurn) {
                 player = activeTurn.player.nextPlayer; // Get the current player
                 activeTurn.endTurn(isFarkle); // End the current turn if it exists
+                await Wait.delay(2000); // Wait for 2 seconds before starting the next turn
             } else {
                 player = players[0]; // If no active turn, start with the first player
             }
@@ -28,7 +29,7 @@ async function main() {
             Swal.fire({
                 title: "Setup Error",
                 text: `Player count not set. Returning to startup.`,
-                icon: "info",
+                icon: "info"
             });
             window.location.href = "startup.html#startup";
             return;

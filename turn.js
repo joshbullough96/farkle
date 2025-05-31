@@ -16,7 +16,7 @@ export class Turn {
             Swal.fire({
                 title: "Game Over",
                 text: `${this.player.name} has already won the game!`,
-                icon: "warning",
+                icon: "warning"
             });
             return;
         }
@@ -48,7 +48,7 @@ export class Turn {
             Swal.fire({
                 title: "Game Over",
                 text: `${this.player.name} has already won the game!`,
-                icon: "warning",
+                icon: "warning"
             });
             return;
         }
@@ -82,7 +82,7 @@ export class Turn {
             Swal.fire({
                 title: "Not allowed",
                 text: "You must select at least one die to roll.",
-                icon: "warning",
+                icon: "warning"
             });
             return;
         }
@@ -90,14 +90,14 @@ export class Turn {
         await Dice.rollDice(this.dice);
     }
 
-    async endTurn(farkle = false) {
+    endTurn(farkle = false) {
         if (farkle) {
             this.player.tempScore = 0; // Reset temporary score
             this.player.showScore();
             Swal.fire({
                 title: "Farkle!",
                 text: "You did not score any points this turn.",
-                icon: "warning",
+                icon: "warning"
             });
             return;
         } 
@@ -116,7 +116,7 @@ export class Turn {
             Swal.fire({
                 title: "Uh Oh!",
                 text: "You did not score enough points, your score has been reset to zero.",
-                icon: "warning",
+                icon: "warning"
             });
             return;
         }
@@ -174,7 +174,7 @@ export class Turn {
             Swal.fire({
                 title: "Nice job!",
                 text: "Congrats you get to roll again.",
-                icon: "success",
+                icon: "success"
             });
             const reroll = true;
             this.resetTurn(reroll); // 'this' is correct here
