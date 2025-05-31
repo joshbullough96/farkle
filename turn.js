@@ -63,8 +63,10 @@ export class Turn {
         }
     }
 
-    resetTurn() {
-        this.turnScore = 0; // Reset the turn score
+    resetTurn(reroll = false) {
+        if (!reroll) {
+            this.turnScore = 0; // Reset the turn score
+        }
         this.dice = []; // Reset the dice property
     }
     
@@ -91,12 +93,19 @@ export class Turn {
     }
 
     calcScore() {
+
+        // need to fix reroll logic so it will allow rerolling multiple times and not zero out the score.
+        // need to check the four of a kind, five of a kind, six of a kind, and straight logic.
+
         const allowReroll = () => {
             alert('Congrats you can roll again!');
             this.resetTurn(); // 'this' is correct here
+            this.resetUI(); // Reset the UI for the next roll
+            this.dice = Dice.initAll(this);
         };
 
         let score = 0;
+        let tempScored = [];
 
         // Calculate score based on the selected dice
         this.selectedDice = this.dice.filter(dice => dice.selected && !dice.scored); // Only consider unscored selected dice that haven't been scored already.
@@ -107,10 +116,13 @@ export class Turn {
             acc[dice.value] = (acc[dice.value] || 0) + 1;
             return acc;
         }, {});
+
         const fourOfAKindValue = Object.keys(valueCounts).find(val => valueCounts[val] === 4);
-        const pairValue = Object.keys(valueCounts).find(val => valueCounts[val] === 2 && val !== fourOfAKindValue);
         const fourOfAKind = !!fourOfAKindValue;
+
+        const pairValue = Object.keys(valueCounts).find(val => valueCounts[val] === 2 && val !== fourOfAKindValue);
         const hasPair = !!pairValue;
+
         if (fourOfAKind && hasPair) { 
             score += 1500; // Example score for four of a kind with a pair
             allowReroll();
@@ -118,10 +130,11 @@ export class Turn {
         }
 
         //two triplets
-        const tripletCount = Object.values(this.selectedDice.reduce((acc, dice) => {
-            acc[dice.value] = (acc[dice.value] || 0) + 1;
-            return acc;
-        }, {})).filter(count => count >= 3).length;
+        const tripletCount = Object.keys(valueCounts).filter(val => valueCounts[val] === 3).length;
+        //Object.values(this.selectedDice.reduce((acc, dice) => {
+        //     acc[dice.value] = (acc[dice.value] || 0) + 1;
+        //     return acc;
+        // }, {})).filter(count => count === 3).length;
         if (tripletCount >= 2) {
             score += 2500; // Example score for two triplets
             allowReroll();
@@ -129,10 +142,11 @@ export class Turn {
         }
 
         //three pairs
-        const paircount = Object.values(this.selectedDice.reduce((acc, dice) => {
-            acc[dice.value] = (acc[dice.value] || 0) + 1;
-            return acc;
-        }, {})).filter(count => count >= 2).length;
+        const paircount = Object.keys(valueCounts).filter(val => valueCounts[val] === 2).length;
+        // Object.values(this.selectedDice.reduce((acc, dice) => {
+        //     acc[dice.value] = (acc[dice.value] || 0) + 1;
+        //     return acc;
+        // }, {})).filter(count => count >= 2).length;
         if (paircount >= 3) {
             score += 1500; // Example score for three pairs
             allowReroll();
@@ -148,10 +162,12 @@ export class Turn {
         }
 
         //six of a kind
-        const sixOfAKind = Object.values(this.selectedDice.reduce((acc, dice) => {
-            acc[dice.value] = (acc[dice.value] || 0) + 1; 
-            return acc;
-        }, {})).filter(count => count >= 6).length === 1;
+        const sixOfAKindValue = Object.keys(valueCounts).find(val => valueCounts[val] === 6);
+        const sixOfAKind = !!sixOfAKindValue;
+        // Object.values(this.selectedDice.reduce((acc, dice) => {
+        //     acc[dice.value] = (acc[dice.value] || 0) + 1; 
+        //     return acc;
+        // }, {})).filter(count => count >= 6).length === 1;
         if (sixOfAKind) {
             score += 3000; // Example score for six of a kind
             allowReroll();
@@ -159,67 +175,88 @@ export class Turn {
         }
 
         //five of a kind
-        const fiveOfAKind = Object.values(this.selectedDice.reduce((acc, dice) => {
-            acc[dice.value] = (acc[dice.value] || 0) + 1; 
-            return acc;
-        }, {})).filter(count => count >= 5).length === 1;
-        if (sixOfAKind) {
-            score += 3000; // Example score for six of a kind
+        const fiveOfAKindValue = Object.keys(valueCounts).find(val => valueCounts[val] === 5);
+        const fiveOfAKind = !!fiveOfAKindValue; // Check if there is a five of a kind
+        if (fiveOfAKind) {
+            tempScored.push(...this.selectedDice.filter(die => die.value === fiveOfAKindValue).map(die => die.id));
+            score += 3000; // Example score for five of a kind
         }
 
         //four of a kind. This was calculated above.
         if(fourOfAKind) {
+            tempScored.push(...this.selectedDice.filter(die => die.value === fourOfAKindValue).map(die => die.id));
             score += 1000; // Example score for four of a kind
         }
 
         //three of a kind
-        const threeOfAKind = Object.values(this.selectedDice.reduce((acc, dice) => {
-            acc[dice.value] = (acc[dice.value] || 0) + 1;
-            return acc;
-        }, {})).some(count => count === 3);
+        const threeOfAKindValue = Object.keys(valueCounts).find(val => valueCounts[val] === 3);
+        const threeOfAKind = !!threeOfAKindValue; // Check if there is a three of a kind
+        // Object.values(this.selectedDice.reduce((acc, dice) => {
+        //     acc[dice.value] = (acc[dice.value] || 0) + 1;
+        //     return acc;
+        // }, {})).some(count => count === 3);
         if (threeOfAKind) {
-            //sixes
-            const sixCount = this.selectedDice.filter(dice => dice.value === 6).length;
-            if (sixCount >= 3) {
+            console.log(`Three of a kind found: ${threeOfAKindValue}`);
+            //sixes           
+            if (threeOfAKindValue == 6) {
+                tempScored.push(...this.selectedDice.filter(dice => dice.value === 6).map(die => die.id));
                 score += 600; // Example score for three sixes
             }
             //fives
-            const fiveCount = this.selectedDice.filter(dice => dice.value === 5).length;
-            if (fiveCount >= 3) {
-                score += 500; // Example score for three sixes
+            // const fiveCount = this.selectedDice.filter(dice => dice.value === 5).length;
+            if (threeOfAKindValue == 5) {
+                tempScored.push(...this.selectedDice.filter(dice => dice.value === 5).map(die => die.id));
+                score += 500; // Example score for three fives
             }
             //fours
-            const fourCount = this.selectedDice.filter(dice => dice.value === 4).length;
-            if (fourCount >= 3) {
+            // const fourCount = this.selectedDice.filter(dice => dice.value === 4).length;
+            // fourCount >= 3
+            if (threeOfAKindValue == 4) {
+                tempScored.push(...this.selectedDice.filter(dice => dice.value === 4).map(die => die.id));
                 score += 400; // Example score for three fours
             }
             //threes
-            const threeCount = this.selectedDice.filter(dice => dice.value === 3).length;
-            if (threeCount >= 3) {
+            // const threeCount = this.selectedDice.filter(dice => dice.value === 3).length;
+            if (threeOfAKindValue == 3) {
+                tempScored.push(...this.selectedDice.filter(dice => dice.value === 3).map(die => die.id));
                 score += 300; // Example score for three threes
             }
             //twos
-            const twoCount = this.selectedDice.filter(dice => dice.value === 2).length;
-            if (twoCount >= 3) {
+            // const twoCount = this.selectedDice.filter(dice => dice.value === 2).length;
+            if (threeOfAKindValue == 2) {
+                tempScored.push(...this.selectedDice.filter(dice => dice.value === 2).map(die => die.id));
                 score += 200; // Example score for three twos
-            }        
+            }
             //ones are calculated below.
-        }
+        }   
 
         //ones
         const oneCount = this.selectedDice.filter(dice => dice.value === 1).length;
-        if (oneCount > 4) {
+        if (oneCount >= 4) {
+            // might need to check if there are any dups before adding to tempScored.
+            tempScored.push(...this.selectedDice.filter(dice => dice.value === 1).map(die => die.id));
             score += (oneCount - 4) * 100; // Example score for ones
         } else {
+            tempScored.push(...this.selectedDice.filter(dice => dice.value === 1).map(die => die.id));
             score += oneCount * 100; // Example score for one one
         }
 
         //fives
         const fiveCount = this.selectedDice.filter(dice => dice.value === 5).length;
         if (fiveCount >= 3) {
+            // might need to check if there are any dups before adding to tempScored.
+            tempScored.push(...this.selectedDice.filter(dice => dice.value === 5).map(die => die.id));
             score += (fiveCount - 3) * 50; // Example score for fives
         } else {
+            tempScored.push(...this.selectedDice.filter(dice => dice.value === 5).map(die => die.id));
             score += fiveCount * 50; // Example score for one five
+        }
+
+        console.log(tempScored);
+        tempScored = [...new Set(tempScored)]; // Remove duplicates
+
+        if((this.dice.filter(dice => dice.scored).length + tempScored.length) === 6) {
+            allowReroll(); // Reset the turn state
         }
 
         return score;
