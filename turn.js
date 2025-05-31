@@ -70,11 +70,11 @@ export class Turn {
     }
 
     async rollDice() {
-        this.startNewRoll();
-        if(this.currentRoll.rollNumber > 1 && this.selectedDice.length === 0) {
+        if(this.currentRoll && this.currentRoll.rollNumber > 1 && (this.selectedDice.length === 0 || this.selectedDice.every(die => die.scored))) {
             alert('You must select at least one die to roll.');
             return;
         }
+        this.startNewRoll();
         await Dice.rollDice(this.dice);
     }
 
