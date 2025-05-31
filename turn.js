@@ -12,6 +12,10 @@ export class Turn {
     }
     
     async startTurn(player) {
+        if(this.player && this.player.isWinner) {
+            alert(`${this.player.name} has already won the game!`);
+            return;
+        }
         this.player = player;
         this.resetTurn(); // Reset the turn state
         this.resetUI();
@@ -36,6 +40,10 @@ export class Turn {
     }
     
     startNewRoll() {
+        if(this.player.isWinner) {
+            alert(`${this.player.name} has already won the game!`);
+            return;
+        }
         // If there's a current roll, finalize its score before starting new roll
         if (this.currentRoll) {
             const score = this.currentRoll.score;

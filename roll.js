@@ -21,24 +21,24 @@ export class Roll {
         }
     }
 
-    calculateScore() {
-        // Only calculate score for dice that were selected in this roll
-        const diceFromThisRoll = this.selectedDice.filter(die => !die.scored);
-        let score = 0;
+    // calculateScore() {
+    //     // Only calculate score for dice that were selected in this roll
+    //     const diceFromThisRoll = this.selectedDice.filter(die => !die.scored);
+    //     let score = 0;
 
-        // Group dice by their values
-        const valueCounts = diceFromThisRoll.reduce((acc, die) => {
-            acc[die.value] = (acc[die.value] || 0) + 1;
-            return acc;
-        }, {});
+    //     // Group dice by their values
+    //     const valueCounts = diceFromThisRoll.reduce((acc, die) => {
+    //         acc[die.value] = (acc[die.value] || 0) + 1;
+    //         return acc;
+    //     }, {});
 
-        // Calculate score based on the combinations
-        // (Using the same scoring logic as before, but only for dice from this roll)
-        // ... scoring logic will be implemented in Turn class ...
+    //     // Calculate score based on the combinations
+    //     // (Using the same scoring logic as before, but only for dice from this roll)
+    //     // ... scoring logic will be implemented in Turn class ...
 
-        this.score = score;
-        return score;
-    }
+    //     this.score = score;
+    //     return score;
+    // }
 
     // markDiceAsScored() {
     //     this.selectedDice.forEach(die => {
@@ -47,4 +47,5 @@ export class Roll {
     //     });
     //     this.isScored = true;
     // }
+    
 }
