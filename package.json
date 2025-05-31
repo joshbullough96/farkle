@@ -1,0 +1,10 @@
+{
+  "name": "farkle",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Farkle game implementation",
+  "main": "script.js",
+  "scripts": {
+    "test": "node test.js"
+  }
+}

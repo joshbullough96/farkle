@@ -2,8 +2,9 @@
 // You can add your JavaScript code below.
 import { Player } from '/player.js';
 import { Turn } from '/turn.js';
+import { Wait } from '/utilities.js';
 
-function main() {
+async function main() {
     if(window.location.hash === "#play") {
 
         let activeTurn = null;
@@ -23,6 +24,7 @@ function main() {
 
         const playerCount = parseInt(sessionStorage.getItem('playerCount'), 10); // Retrieve player count
         if (!playerCount || isNaN(playerCount)) {
+            await Wait.delay(1000);
             alert('Player count not set. Returning to startup.');
             window.location.href = "startup.html#startup";
             return;
@@ -48,16 +50,15 @@ function main() {
             const farkle = activeTurn.checkFarkle();
             if(farkle) {
                 const isFarkle = true;
-                rotateTurn(isFarkle) // End the turn with Farkle
+                rotateTurn(isFarkle); // End the turn with Farkle
                 // Create a new turn for the next player
                 return;
             }
- 
         });
 
         // Add event listener to the roll button
         $('#endTurnBtn').click(async () => {
-            rotateTurn()
+            rotateTurn();
         });
 
     }

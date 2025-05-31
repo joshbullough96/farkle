@@ -1,5 +1,6 @@
 import { Dice } from './dice.js';
 import { Roll } from './roll.js'; 
+import { Wait } from './utilities.js';
 
 export class Turn {
     constructor(turnScore = 0, dice = null) {
@@ -16,12 +17,42 @@ export class Turn {
         this.resetUI();
         this.dice = Dice.initAll(this);
     }
+
+    async startTurnConsole(player) {
+        this.player = player;
+        this.resetTurn(); // Reset the turn state
+        this.dice = this.initDiceConsole(); // Initialize dice console
+    }
+
+    initDiceConsole(){
+        const diceArr = []; // Reset the dice array
+        for(let i = 0; i < 6; i++) {
+            const id = `dice-${i + 1}`;
+            const value = null;
+            const dieObj = { id, value, turn: this };
+            diceArr.push(dieObj);
+        }
+        return diceArr;
+    }
     
     startNewRoll() {
         // If there's a current roll, finalize its score before starting new roll
         if (this.currentRoll) {
             const score = this.currentRoll.score;
             this.markDiceAsScored(); // Mark dice from previous roll as scored
+            this.turnScore += score; // Add the score to turn total
+        }
+
+        const rollNumber = this.rolls.length + 1;
+        this.currentRoll = new Roll(rollNumber);
+        this.rolls.push(this.currentRoll);
+    }
+
+    startNewRollConsole() {
+        // If there's a current roll, finalize its score before starting new roll
+        if (this.currentRoll) {
+            const score = this.currentRoll.score;
+            this.markDiceAsScoredConsole(); // Mark dice from previous roll as scored
             this.turnScore += score; // Add the score to turn total
         }
 
@@ -38,11 +69,12 @@ export class Turn {
         }
         await Dice.rollDice(this.dice);
     }
-    
-    endTurn(farkle = false) {
+
+    async endTurn(farkle = false) {
         if (farkle) {
             this.player.tempScore = 0; // Reset temporary score
             this.player.showScore();
+            await Wait.delay(1000);
             alert('Farkle! You did not score any points this turn.');
         } else {
             // Mark the final roll's dice as scored and add its score
@@ -97,9 +129,20 @@ export class Turn {
         // need to fix reroll logic so it will allow rerolling multiple times and not zero out the score.
         // need to check the four of a kind, five of a kind, six of a kind, and straight logic.
 
+        //testing
+        // const allowReroll = async () => {
+        //     await Wait.delay(500);
+        //     console.log('Congrats you can roll again!');
+        //     const reroll = true;
+        //     this.resetTurn(reroll); // 'this' is correct here
+        //     // this.resetUI(); // Reset the UI for the next roll
+        //     this.dice = this.initDiceConsole(); // Reinitialize dice for the next roll
+        // };
+
         const allowReroll = () => {
             alert('Congrats you can roll again!');
-            this.resetTurn(); // 'this' is correct here
+            const reroll = true;
+            this.resetTurn(reroll); // 'this' is correct here
             this.resetUI(); // Reset the UI for the next roll
             this.dice = Dice.initAll(this);
         };
@@ -196,7 +239,7 @@ export class Turn {
         //     return acc;
         // }, {})).some(count => count === 3);
         if (threeOfAKind) {
-            console.log(`Three of a kind found: ${threeOfAKindValue}`);
+            // console.log(`Three of a kind found: ${threeOfAKindValue}`);
             //sixes           
             if (threeOfAKindValue == 6) {
                 tempScored.push(...this.selectedDice.filter(dice => dice.value === 6).map(die => die.id));
@@ -232,27 +275,37 @@ export class Turn {
 
         //ones
         const oneCount = this.selectedDice.filter(dice => dice.value === 1).length;
-        if (oneCount >= 4) {
-            // might need to check if there are any dups before adding to tempScored.
-            tempScored.push(...this.selectedDice.filter(dice => dice.value === 1).map(die => die.id));
-            score += (oneCount - 4) * 100; // Example score for ones
-        } else {
+        if(oneCount < 4) {
             tempScored.push(...this.selectedDice.filter(dice => dice.value === 1).map(die => die.id));
             score += oneCount * 100; // Example score for one one
         }
 
+        // if (oneCount >= 4) {
+        //     // might need to check if there are any dups before adding to tempScored.
+        //     tempScored.push(...this.selectedDice.filter(dice => dice.value === 1).map(die => die.id));
+        //     score += (oneCount - 4) * 100; // Example score for ones
+        // } else {
+        //     tempScored.push(...this.selectedDice.filter(dice => dice.value === 1).map(die => die.id));
+        //     score += oneCount * 100; // Example score for one one
+        // }
+
         //fives
         const fiveCount = this.selectedDice.filter(dice => dice.value === 5).length;
-        if (fiveCount >= 3) {
-            // might need to check if there are any dups before adding to tempScored.
-            tempScored.push(...this.selectedDice.filter(dice => dice.value === 5).map(die => die.id));
-            score += (fiveCount - 3) * 50; // Example score for fives
-        } else {
+       
+        if(fiveCount < 3){
             tempScored.push(...this.selectedDice.filter(dice => dice.value === 5).map(die => die.id));
             score += fiveCount * 50; // Example score for one five
-        }
+        } 
 
-        console.log(tempScored);
+        // if (fiveCount >= 3) {
+        //     // might need to check if there are any dups before adding to tempScored.
+        //     tempScored.push(...this.selectedDice.filter(dice => dice.value === 5).map(die => die.id));
+        //     score += (fiveCount - 3) * 50; // Example score for fives
+        // } else {
+        //     tempScored.push(...this.selectedDice.filter(dice => dice.value === 5).map(die => die.id));
+        //     score += fiveCount * 50; // Example score for one five
+        // }
+
         tempScored = [...new Set(tempScored)]; // Remove duplicates
 
         if((this.dice.filter(dice => dice.scored).length + tempScored.length) === 6) {
@@ -261,7 +314,7 @@ export class Turn {
 
         return score;
 
-    }    
+    }
     
     updateScore() {
         // Calculate score only for newly selected dice in the current roll
@@ -271,10 +324,25 @@ export class Turn {
         this.player.showScore();
     }
 
+    updateScoreConsole() {
+        // Calculate score only for newly selected dice in the current roll
+        const newScore = this.calcScore();
+        this.currentRoll.score = newScore;
+        this.player.tempScore = this.turnScore + newScore;
+    }
+
     markDiceAsScored() {
         this.selectedDice.forEach(die => {
             die.scored = true;
             die.el.classList.add('scored'); // Add scored class to the die element
+        });
+        this.isScored = true;
+    }
+
+    markDiceAsScoredConsole() {
+        this.selectedDice.forEach(die => {
+            die.scored = true;
+            //die.el.classList.add('scored'); // Add scored class to the die element
         });
         this.isScored = true;
     }
