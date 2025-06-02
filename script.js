@@ -1,8 +1,8 @@
 // This is a basic JavaScript file template.
 // You can add your JavaScript code below.
-import { Player } from '/player.js';
-import { Turn } from '/turn.js';
-import { Wait } from '/utilities.js';
+import { Player } from './player.js';
+import { Turn } from './turn.js';
+import { Wait } from './utilities.js';
 
 async function main() {
     if(window.location.hash === "#play") {
