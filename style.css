@@ -142,6 +142,10 @@ button:hover {
     margin: 1rem 0;
 }
 
+.warning {
+    /*background-color: #FFAC1C;*/
+}
+
 select {
     font-size: 1.2rem;
 }
