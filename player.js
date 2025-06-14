@@ -15,7 +15,7 @@ export class Player {
     showScore() {
         const scoreContainer = document.getElementById('playersScoresContainer');
         const score = this.score + this.tempScore; // Get the current player's score
-        this.isWinner = score >= 10000; // Check if the player has won
+        this.isWinner = score >= this.game.scoreTo; // Check if the player has won
         //check to see if player score div already exists
         const existingScoreDiv = document.getElementById(`player-${this.id}-score`);
         if (existingScoreDiv) {

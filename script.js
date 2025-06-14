@@ -1,5 +1,6 @@
 // This is a basic JavaScript file template.
 // You can add your JavaScript code below.
+import { Game } from './game.js';
 import { Player } from './player.js';
 import { Turn } from './turn.js';
 import { Wait } from './utilities.js';
@@ -35,6 +36,23 @@ async function main() {
             return;
         }
 
+
+        const scoreTo = parseInt(sessionStorage.getItem('scoreTo'), 10); // Retrieve score to amount
+        if (!scoreTo || isNaN(scoreTo)) {
+            await Wait.delay(1000);
+            Swal.fire({
+                title: "Setup Error",
+                text: `No winning score selected. Returning to startup.`,
+                icon: "info"
+            });
+            window.location.href = "startup.html#startup";
+            return;
+        }
+
+        //start a new game
+        const game = new Game(scoreTo);
+        game.updateScoreToUI()
+
         for (let i = 1; i <= playerCount; i++) {
             const player = new Player(`Player ${i}`, i);
             players.push(player);
@@ -43,6 +61,7 @@ async function main() {
         // Link players in a circular order
         players.forEach((player, index) => {
             player.nextPlayer = players[(index + 1) % players.length];
+            player.game = game;
             player.showScore();
         });
 
@@ -76,9 +95,10 @@ $('#startBtn').click(() => {
 
 $('#playBtn').click(() => {
     // Load play page
-    const playerSelect = document.getElementById('playerCount');
-    const playerCount = playerSelect.value;
+    const playerCount = $('#playerCount').val();
+    const scoreTo = $('#scoreRange').val();
     sessionStorage.setItem('playerCount', playerCount); // Store player count in sessionStorage
+    sessionStorage.setItem('scoreTo', scoreTo); 
     window.location.href = "play.html#play";
 });
 
@@ -89,6 +109,10 @@ $('#backBtn').click(() => {
     if(window.location.hash == "#startup") {
         window.location.href = "index.html"; 
     }
+});
+
+$('#scoreRange').on('input', function () {
+    $('#selectedScore').text($(this).val());
 });
 
 main();

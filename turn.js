@@ -172,7 +172,7 @@ export class Turn {
 
         const allowReroll = () => {
             Swal.fire({
-                title: "Nice job!",
+                title: "Hot Dice!",
                 text: "Congrats you get to roll again.",
                 icon: "success"
             });
