@@ -136,7 +136,7 @@ export class Turn {
     resetUI() {
         const diceContainer = document.getElementById('diceContainer');
         diceContainer.innerHTML = ''; // Clear previous dice
-        document.getElementById('playersContainer').textContent = `${this.player.name}'s Turn`; // Update the current player display
+        document.getElementById('playerTurn').textContent = `${this.player.name}'s Turn`; // Update the current player display
     }
 
     checkFarkle() {

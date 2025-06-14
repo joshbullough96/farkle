@@ -32,6 +32,12 @@ aside {
     margin-bottom: 60px;
 }
 
+/*#game-container {
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
+}*/
+
 #top-container, #bottom-container {
     text-align: center;  
 }
@@ -48,6 +54,10 @@ aside {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+#bottom-container {
+    max-width: 100%;
+}
+
 h1 {
     color: #0078d7;
     margin-bottom: 1rem;
@@ -62,7 +72,11 @@ button {
     border-radius: 5px;
     font-size: 1rem;
     transition: all 0.3s ease;
-    min-width: 150px;
+    width: clamp(200px, 48%, 400px);
+}
+
+#backBtn {
+    width: 100%;
 }
 
 button:hover {
@@ -123,11 +137,6 @@ button:hover {
     margin: 1rem 0;
 }
 
-#playerContainer, #scoreContainer {
-    margin: 1rem 0;
-    text-align: center;
-}
-
 select {
     font-size: 1.2rem;
 }
@@ -138,6 +147,7 @@ select > option {
 
 .player-select-container {
     width: 45%;
+    max-width: 400px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -149,10 +159,33 @@ select > option {
     border: 1px solid #ccc;
 }
 
+#playerContainer, #scoreContainer {
+    margin: 1rem 0;
+    text-align: center;
+}
+
+#scoreContainer {
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+#playersScoresContainer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-content: center;
+    gap: 1rem;
+    font-size: 1.1em;
+}
+
 .player-score {
-    padding: 10px 0;
+    padding: 10px;
     font-size: 16px;
     margin-top: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 .hidden {
@@ -195,8 +228,7 @@ select > option {
 
     button {
         padding: 0.8rem 2rem;
-        font-size: 0.9rem;
-        min-width: 100px;
+        font-size: 1rem;
     }
 
     h1 {
@@ -245,7 +277,16 @@ select > option {
         margin: 0;
     }
 
-    button {
-        width: 200px; /* Set a consistent width for buttons */
+    button, .player-select-container {
+        width: 100%; /* Set a consistent width for buttons */
     }
+
+    button {
+        font-size: 1rem;
+    }
+
+    .game-status {
+        width: 100%;
+    }
+
 }
