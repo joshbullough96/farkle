@@ -20,6 +20,10 @@ main {
     box-sizing: border-box;
 }
 
+aside {
+    float: right;
+}
+
 #container {
     background-color: white;
     border-radius: 10px;
@@ -28,8 +32,12 @@ main {
     margin-bottom: 60px;
 }
 
+#top-container, #bottom-container {
+    text-align: center;  
+}
+
 #top-container {
-    text-align: center;
+    margin-top: 4rem;
     margin-bottom: 2rem;
 }
 
@@ -54,7 +62,7 @@ button {
     border-radius: 5px;
     font-size: 1rem;
     transition: all 0.3s ease;
-    min-width: 120px;
+    min-width: 150px;
 }
 
 button:hover {
@@ -120,12 +128,25 @@ button:hover {
     text-align: center;
 }
 
+select {
+    font-size: 1.2rem;
+}
+
+select > option {
+    font-size: 1.3rem;
+}
+
+.player-select-container {
+    width: 45%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .player-select {
     width: 100%;
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
-    font-size: 16px;
 }
 
 .player-score {

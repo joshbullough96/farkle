@@ -8,20 +8,33 @@
     <title>Startup Farklord</title>
 </head>
 <body>
-    <h1>Welcome to Startup Page</h1>
-    <p>Select how many players you would like.</p>
-    <div class="player-select-container">
-        <select id="playerCount" class="player-select">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-        </select>
-    </div>
-    <div>   
-        <button id="playBtn">Play</button>
-        <button id="backBtn">Back</button>
-    </div>
+    <main>
+        <div id="container">
+            <aside>
+                <div>
+                    <button id="backBtn">Back</button>
+                </div>
+            </aside>
+            <div id="top-container">
+                <h1>Welcome to Startup Page</h1>
+                <p>Select the number of players</p>
+                <div class="player-select-container">
+                    <select id="playerCount" class="player-select">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+            </div>
+            <div id="bottom-container">
+                <div>
+                    <button id="playBtn">Play</button>
+
+                </div>
+            </div>
+        </div>
+    </main>
     <script type="module" src="script.js"></script>
 </body>
 </html>
