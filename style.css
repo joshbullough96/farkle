@@ -98,6 +98,7 @@ button:hover {
 }
 
 .die {
+    cursor: pointer;
     width: clamp(50px, 2vw, 50px);
     height: clamp(50px, 2vw, 50px);
     display: flex;
