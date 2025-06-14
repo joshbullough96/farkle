@@ -88,14 +88,14 @@ button:hover {
 #diceContainer {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 1rem;
     justify-content: center;
     margin: 2rem 0;
 }
 
 .die {
-    width: 60px;
-    height: 60px;
+    width: clamp(50px, 2vw, 50px);
+    height: clamp(50px, 2vw, 50px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -221,8 +221,6 @@ select > option {
     }
 
     .die {
-        width: 60px;
-        height: 60px;
         font-size: 20px;
     }
 
@@ -237,37 +235,19 @@ select > option {
 }
 
 @media (max-width: 480px) {
+
     .flex-box {
         flex-direction: column;
         gap: 1rem;
-        display: contents; /* This removes the flex container */
-    }
-
-    #rollBtn {
-        order: 1;
-        margin-bottom: 1rem;
+        display: contents;
     }
 
     #diceContainer {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 15px;
+        gap: 1rem;
         justify-items: center;
-        max-width: 200px;
-        margin: 1rem auto;
-        order: 2;
-    }
-
-    #endTurnBtn {
-        order: 3;
-        margin-top: 1rem;
-    }
-
-    /* Ensure the flex container handles the ordering */
-    .flex-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        margin: 2rem auto;
     }
 
     .die {
@@ -287,6 +267,14 @@ select > option {
 
     .game-status {
         width: 100%;
+    }
+
+    #rollBtn {
+        margin-bottom: 1rem;
+    }
+
+    #endTurnBtn {
+        margin-top: 1rem;
     }
 
 }
