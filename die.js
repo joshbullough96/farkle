@@ -1,3 +1,5 @@
+import { Wait } from './utilities.js'
+
 export class Die {
     constructor(id, value = '', turn) {
         this.id = id;
@@ -24,11 +26,67 @@ export class Die {
         this.el = dieElement;
     }
 
+    hasNoCombos() {
+
+        // ones or fives
+        if (this.value === 1 || this.value === 5) return false;
+
+        // all dice that have not been banked.
+        const unscoredDice = this.turn.dice.filter(die => !die.scored);
+
+        const valueCounts = unscoredDice.reduce((acc, dice) => {
+            acc[dice.value] = (acc[dice.value] || 0) + 1;
+            return acc;
+        }, {});
+
+        const threeOfAKindPlusValue = Object.keys(valueCounts).find(val => valueCounts[val] >= 3 && this.value === parseInt(val));
+        // is part of a 3 of a kind or higher
+        const threeOfAKindPlus = !!threeOfAKindPlusValue;
+        if (threeOfAKindPlus) {
+            return false;
+        }
+
+        // is part of a straight
+        const isStraight = unscoredDice === 6 && unscoredDice.every((dice, index) => dice.value === index + 1);
+        if (isStraight) {
+            return false;
+        }
+
+        // is a pair that is part of a four of a kind or higher or three pairs
+        const paircount = Object.keys(valueCounts).filter(val => valueCounts[val] === 2 && this.value === parseInt(val)).length;
+        if (paircount === 3) {
+            return false;
+        }
+
+        const fourOfAKindValue = Object.keys(valueCounts).find(val => valueCounts[val] === 4);
+        const fourOfAKind = !!fourOfAKindValue;
+        if (fourOfAKind && paircount === 1) {
+            return false
+        }
+
+        return true
+    }
+
+
+
     select() {
+
+        async function flashUI(el) {
+            el.classList.add('flash-red-border');
+            await Wait.delay(1350); //wait 1.35s
+            el.classList.remove('flash-red-border');
+        }
+
         if (this.scored) {
             return; // Don't allow re-selecting scored dice
         }
-        
+
+        if (!this.selected && this.hasNoCombos()) {
+            flashUI(this.el);
+            //flash a red border to denote no combinations.
+            return; //Don't allow selecting because there are no combos.'
+        }
+
         this.el.classList.toggle('selected');
         this.selected = !this.selected; // Toggle the selected state
         
