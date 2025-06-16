@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.0/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
     <title>Play Farklord</title>
 </head>
@@ -34,8 +35,14 @@
                     <div id="diceContainer"></div>
                     <div class="flex-container">
                         <div class="flex-box">
-                            <button id="rollBtn">Roll dice</button>
-                            <button id="endTurnBtn" class="warning">End Turn</button>
+                            <button id="rollBtn">
+                                <i id="roll-btn-i" class="fa fa-circle-o-notch fa-spin" style="display:none;"></i>
+                                Roll dice
+                            </button>
+                            <button id="endTurnBtn" class="warning">
+                                <i id="end-turn-btn-i" class="fa fa-circle-o-notch fa-spin" style="display:none;"></i>
+                                End Turn
+                            </button>
                         </div>
                     </div>
                     <br>

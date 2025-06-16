@@ -15,9 +15,9 @@ async function main() {
             let player;
             if (activeTurn) {
                 player = activeTurn.player.nextPlayer; // Get the current player
-                activeTurn.endTurn(isFarkle); // End the current turn if it exists
-                await Wait.delay(2000); // Wait for 2 seconds before starting the next turn
+                await activeTurn.endTurn(isFarkle); // End the current turn if it exists
             } else {
+                // the game just started, start with the first player.
                 player = players[0]; // If no active turn, start with the first player
             }
             activeTurn = new Turn(); // Create new turn and set as active
@@ -70,19 +70,24 @@ async function main() {
 
         // Add event listener to the roll button
         $('#rollBtn').click(async () => {
+            $('#roll-btn-i').show();
             await activeTurn.rollDice();
             const farkle = activeTurn.checkFarkle();
             if(farkle) {
                 const isFarkle = true;
-                rotateTurn(isFarkle); // End the turn with Farkle
+                await rotateTurn(isFarkle); // End the turn with Farkle
                 // Create a new turn for the next player
+                $('#roll-btn-i').hide();
                 return;
             }
+            $('#roll-btn-i').hide();
         });
 
         // Add event listener to the roll button
         $('#endTurnBtn').click(async () => {
-            rotateTurn();
+            $('#end-turn-btn-i').show();
+            await rotateTurn();
+            $('#end-turn-btn-i').hide();
         });
 
     }

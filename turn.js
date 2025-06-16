@@ -11,7 +11,7 @@ export class Turn {
         this.selectedDice = [];
     }
     
-    async startTurn(player) {
+    startTurn(player) {
         if(this.player && this.player.isWinner) {
             Swal.fire({
                 title: "Game Over",
@@ -90,17 +90,19 @@ export class Turn {
         await Dice.rollDice(this.dice);
     }
 
-    endTurn(farkle = false) {
+    async endTurn(farkle = false) {
         if (farkle) {
             this.player.tempScore = 0; // Reset temporary score
             this.player.showScore();
-            Swal.fire({
+            //wait for the alert to be answered before resetting.
+            await Swal.fire({
                 title: "Farkle!",
                 text: "You did not score any points this turn.",
                 icon: "warning"
             });
+            this.resetUI();
             return;
-        } 
+        }
 
         // Mark the final roll's dice as scored and add its score
         if (this.currentRoll && this.currentRoll.score > 0) {
@@ -113,16 +115,21 @@ export class Turn {
             this.player.tempScore = 0;
             this.player.score = 0;
             this.player.showScore();
-            Swal.fire({
+            //wait for the alert to be answered before resetting.
+            await Swal.fire({
                 title: "Uh Oh!",
                 text: "You did not score enough points, your score has been reset to zero.",
                 icon: "warning"
             });
+            this.resetUI();
             return;
         }
 
         //add the turn score to the player's total score if it is greater than 500 and not a farkle.
         this.player.score += this.turnScore;
+        // wait 1 second before clearing the dice.
+        await Wait.delay(1000);
+        this.resetUI(); 
     }
     
 
@@ -170,15 +177,16 @@ export class Turn {
         //     this.dice = this.initDiceConsole(); // Reinitialize dice for the next roll
         // };
 
-        const allowReroll = () => {
-            Swal.fire({
+        const allowReroll = async () => {
+            // wait for the alert to be answered before resetting.
+            await Swal.fire({
                 title: "Hot Dice!",
                 text: "Congrats you get to roll again.",
                 icon: "success"
             });
             const reroll = true;
             this.resetTurn(reroll); // 'this' is correct here
-            this.resetUI(); // Reset the UI for the next roll
+            this.resetUI();
             this.dice = Dice.initAll(this);
         };
 
