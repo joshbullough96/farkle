@@ -52,12 +52,13 @@ export class Die {
             return false;
         }
 
-        // is a pair that is part of a four of a kind or higher or three pairs
-        const paircount = Object.keys(valueCounts).filter(val => valueCounts[val] === 2 && this.value === parseInt(val)).length;
+        // three pairs.
+        const paircount = Object.keys(valueCounts).filter(val => valueCounts[val] === 2).length;
         if (paircount === 3) {
             return false;
         }
 
+        // is a pair that is part of a four of a kind or higher or three pairs.
         const fourOfAKindValue = Object.keys(valueCounts).find(val => valueCounts[val] === 4);
         const fourOfAKind = !!fourOfAKindValue;
         if (fourOfAKind && paircount === 1) {
@@ -124,10 +125,4 @@ export class Die {
             }, rollDuration);
         });
     }
-
-    // calcScore() {
-    //     const rollScore = activeTurn.calcScore(); // Calculate score for the active player for the turn
-    //     activeTurn.player.tempScore = rollScore; // Set the temporary score for the player
-    //     activeTurn.player.showScore(); // Update the player's score display
-    // }
 }
