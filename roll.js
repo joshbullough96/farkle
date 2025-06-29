@@ -20,32 +20,5 @@ export class Roll {
             die.rollNumber = null;
         }
     }
-
-    // calculateScore() {
-    //     // Only calculate score for dice that were selected in this roll
-    //     const diceFromThisRoll = this.selectedDice.filter(die => !die.scored);
-    //     let score = 0;
-
-    //     // Group dice by their values
-    //     const valueCounts = diceFromThisRoll.reduce((acc, die) => {
-    //         acc[die.value] = (acc[die.value] || 0) + 1;
-    //         return acc;
-    //     }, {});
-
-    //     // Calculate score based on the combinations
-    //     // (Using the same scoring logic as before, but only for dice from this roll)
-    //     // ... scoring logic will be implemented in Turn class ...
-
-    //     this.score = score;
-    //     return score;
-    // }
-
-    // markDiceAsScored() {
-    //     this.selectedDice.forEach(die => {
-    //         die.scored = true;
-    //         die.el.classList.add('scored'); // Add scored class to the die element
-    //     });
-    //     this.isScored = true;
-    // }
     
 }

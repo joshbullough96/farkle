@@ -26,41 +26,11 @@ export class Turn {
         this.dice = Dice.initAll(this);
     }
 
-    async startTurnConsole(player) {
-        this.player = player;
-        this.resetTurn(); // Reset the turn state
-        this.dice = this.initDiceConsole(); // Initialize dice console
-    }
-
-    initDiceConsole(){
-        const diceArr = []; // Reset the dice array
-        for(let i = 0; i < 6; i++) {
-            const id = `dice-${i + 1}`;
-            const value = null;
-            const dieObj = { id, value, turn: this };
-            diceArr.push(dieObj);
-        }
-        return diceArr;
-    }
-    
     startNewRoll() {
         // If there's a current roll, finalize its score before starting new roll
         if (this.currentRoll) {
             const score = this.currentRoll.score;
             this.markDiceAsScored(); // Mark dice from previous roll as scored
-            this.turnScore += score; // Add the score to turn total
-        }
-
-        const rollNumber = this.rolls.length + 1;
-        this.currentRoll = new Roll(rollNumber);
-        this.rolls.push(this.currentRoll);
-    }
-
-    startNewRollConsole() {
-        // If there's a current roll, finalize its score before starting new roll
-        if (this.currentRoll) {
-            const score = this.currentRoll.score;
-            this.markDiceAsScoredConsole(); // Mark dice from previous roll as scored
             this.turnScore += score; // Add the score to turn total
         }
 
@@ -169,16 +139,6 @@ export class Turn {
         // need to fix reroll logic so it will allow rerolling multiple times and not zero out the score.
         // need to check the four of a kind, five of a kind, six of a kind, and straight logic.
 
-        //testing
-        // const allowReroll = async () => {
-        //     await Wait.delay(500);
-        //     console.log('Congrats you can roll again!');
-        //     const reroll = true;
-        //     this.resetTurn(reroll); // 'this' is correct here
-        //     // this.resetUI(); // Reset the UI for the next roll
-        //     this.dice = this.initDiceConsole(); // Reinitialize dice for the next roll
-        // };
-
         const allowReroll = async () => {
             // wait for the alert to be answered before resetting.
             await Swal.fire({
@@ -219,10 +179,7 @@ export class Turn {
 
         //two triplets
         const tripletCount = Object.keys(valueCounts).filter(val => valueCounts[val] === 3).length;
-        //Object.values(this.selectedDice.reduce((acc, dice) => {
-        //     acc[dice.value] = (acc[dice.value] || 0) + 1;
-        //     return acc;
-        // }, {})).filter(count => count === 3).length;
+
         if (tripletCount >= 2) {
             score += 2500; // Example score for two triplets
             allowReroll();
@@ -231,10 +188,7 @@ export class Turn {
 
         //three pairs
         const paircount = Object.keys(valueCounts).filter(val => valueCounts[val] === 2).length;
-        // Object.values(this.selectedDice.reduce((acc, dice) => {
-        //     acc[dice.value] = (acc[dice.value] || 0) + 1;
-        //     return acc;
-        // }, {})).filter(count => count >= 2).length;
+
         if (paircount >= 3) {
             score += 1500; // Example score for three pairs
             allowReroll();
@@ -279,10 +233,7 @@ export class Turn {
         //three of a kind
         const threeOfAKindValue = Object.keys(valueCounts).find(val => valueCounts[val] === 3);
         const threeOfAKind = !!threeOfAKindValue; // Check if there is a three of a kind
-        // Object.values(this.selectedDice.reduce((acc, dice) => {
-        //     acc[dice.value] = (acc[dice.value] || 0) + 1;
-        //     return acc;
-        // }, {})).some(count => count === 3);
+
         if (threeOfAKind) {
             // console.log(`Three of a kind found: ${threeOfAKindValue}`);
             //sixes           
@@ -325,15 +276,6 @@ export class Turn {
             score += oneCount * 100; // Example score for one one
         }
 
-        // if (oneCount >= 4) {
-        //     // might need to check if there are any dups before adding to tempScored.
-        //     tempScored.push(...this.selectedDice.filter(dice => dice.value === 1).map(die => die.id));
-        //     score += (oneCount - 4) * 100; // Example score for ones
-        // } else {
-        //     tempScored.push(...this.selectedDice.filter(dice => dice.value === 1).map(die => die.id));
-        //     score += oneCount * 100; // Example score for one one
-        // }
-
         //fives
         const fiveCount = this.selectedDice.filter(dice => dice.value === 5).length;
        
@@ -341,15 +283,6 @@ export class Turn {
             tempScored.push(...this.selectedDice.filter(dice => dice.value === 5).map(die => die.id));
             score += fiveCount * 50; // Example score for one five
         } 
-
-        // if (fiveCount >= 3) {
-        //     // might need to check if there are any dups before adding to tempScored.
-        //     tempScored.push(...this.selectedDice.filter(dice => dice.value === 5).map(die => die.id));
-        //     score += (fiveCount - 3) * 50; // Example score for fives
-        // } else {
-        //     tempScored.push(...this.selectedDice.filter(dice => dice.value === 5).map(die => die.id));
-        //     score += fiveCount * 50; // Example score for one five
-        // }
 
         tempScored = [...new Set(tempScored)]; // Remove duplicates
 
@@ -369,25 +302,10 @@ export class Turn {
         this.player.showScore();
     }
 
-    updateScoreConsole() {
-        // Calculate score only for newly selected dice in the current roll
-        const newScore = this.calcScore();
-        this.currentRoll.score = newScore;
-        this.player.tempScore = this.turnScore + newScore;
-    }
-
     markDiceAsScored() {
         this.selectedDice.forEach(die => {
             die.scored = true;
             die.el.classList.add('scored'); // Add scored class to the die element
-        });
-        this.isScored = true;
-    }
-
-    markDiceAsScoredConsole() {
-        this.selectedDice.forEach(die => {
-            die.scored = true;
-            //die.el.classList.add('scored'); // Add scored class to the die element
         });
         this.isScored = true;
     }
