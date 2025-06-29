@@ -31,7 +31,8 @@ export class Dice {
         diceArr.forEach(die => {
             die.show();
         });
-        await Promise.all(diceArr.filter(die => !die.selected).map(die => die.roll()));
+        //const vals = [2, 2, 3, 3, 4, 6];
+        await Promise.all(diceArr.filter(die => !die.selected).map((die, index) => die.roll())); //for testing: vals[index]
     }
 
     // Returns only the selected dice from the array

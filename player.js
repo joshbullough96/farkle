@@ -8,11 +8,16 @@ export class Player {
         this.isWinner = false; // Flag to track if the player has won
     }
 
-    showWinner() {
-        alert(`${this.name} has won with ${this.score + this.tempScore} points! 🎉`);
+    async showWinner() {
+        await Swal.fire({
+            title: "Winner!",
+            text: `${this.name} has won with ${this.score + this.tempScore} points! 🎉`,
+            icon: "warning"
+        });
+        return
     }
 
-    showScore() {
+    async showScore() {
         const scoreContainer = document.getElementById('playersScoresContainer');
         const score = this.score + this.tempScore; // Get the current player's score
         this.isWinner = score >= this.game.scoreTo; // Check if the player has won
@@ -21,7 +26,7 @@ export class Player {
         if (existingScoreDiv) {
             existingScoreDiv.textContent = `${this.name}'s score: ${score}`;
             if (this.isWinner) {
-                this.showWinner();
+                await this.showWinner();
             }
             return; // Exit if the score div already exists
         }
@@ -31,8 +36,9 @@ export class Player {
         playerScore.textContent = `${this.name}'s score: ${this.score}`;
         scoreContainer.appendChild(playerScore);
         if (this.isWinner) {
-            this.showWinner();
+            await this.showWinner();
         }
+        return;
     }
 
 }

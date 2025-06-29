@@ -44,14 +44,6 @@ export class Turn {
     }
     
     startNewRoll() {
-        if(this.player.isWinner) {
-            Swal.fire({
-                title: "Game Over",
-                text: `${this.player.name} has already won the game!`,
-                icon: "warning"
-            });
-            return;
-        }
         // If there's a current roll, finalize its score before starting new roll
         if (this.currentRoll) {
             const score = this.currentRoll.score;
@@ -84,10 +76,19 @@ export class Turn {
                 text: "You must select at least one die to roll.",
                 icon: "warning"
             });
-            return;
+            return false;
+        }
+        if (this.player.isWinner) {
+            await Swal.fire({
+                title: "Game Over",
+                text: `${this.player.name} has already won the game!`,
+                icon: "warning"
+            });
+            return false;
         }
         this.startNewRoll();
         await Dice.rollDice(this.dice);
+        return true;
     }
 
     async endTurn(farkle = false) {
@@ -155,11 +156,12 @@ export class Turn {
             return acc;
         }, {});
         
-        const hasPairsOrMore = Object.values(valueCounts).some(count => count >= 3);
+        const hasThreeOfAKindPlus = Object.values(valueCounts).some(count => count >= 3);
+        const hasThreePairs = Object.values(valueCounts).filter(count => count === 2).length >= 3;
         const hasStraight = unselectedDice.length === 6 && 
             new Set(unselectedDice.map(d => d.value)).size === 6;
 
-        return !(hasOnes || hasFives || hasPairsOrMore || hasStraight);
+        return !(hasOnes || hasFives || hasThreeOfAKindPlus || hasThreePairs || hasStraight);
     }
 
     calcScore() {

@@ -47,7 +47,7 @@ export class Die {
         }
 
         // is part of a straight
-        const isStraight = unscoredDice === 6 && unscoredDice.every((dice, index) => dice.value === index + 1);
+        const isStraight = unscoredDice.length === 6 && unscoredDice.every((dice, index) => dice.value === index + 1);
         if (isStraight) {
             return false;
         }
@@ -111,12 +111,12 @@ export class Die {
         this.el.classList.remove('hidden'); // Show the die
     }
 
-    roll() {
+    roll(val) {
         return new Promise(resolve => {
             const rollDuration = Math.random() * 1000 + 500; // Random duration between 500ms and 1500ms
             this.el.classList.add('realistic-roll-animation');
             setTimeout(() => {
-                this.value = Math.floor(Math.random() * 6) + 1;
+                this.value = val || Math.floor(Math.random() * 6) + 1;
                 this.el.textContent = this.value; // Update the displayed value
                 this.el.classList.remove('realistic-roll-animation');
                 this.el.style.transform = 'rotate(0deg)'; // Reset rotation to 0

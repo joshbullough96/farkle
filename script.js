@@ -71,14 +71,16 @@ async function main() {
         // Add event listener to the roll button
         $('#rollBtn').click(async () => {
             $('#roll-btn-i').show();
-            await activeTurn.rollDice();
-            const farkle = activeTurn.checkFarkle();
-            if(farkle) {
-                const isFarkle = true;
-                await rotateTurn(isFarkle); // End the turn with Farkle
-                // Create a new turn for the next player
-                $('#roll-btn-i').hide();
-                return;
+            const proceed = await activeTurn.rollDice();
+            if (proceed) {
+                const farkle = activeTurn.checkFarkle();
+                if (farkle) {
+                    const isFarkle = true;
+                    await rotateTurn(isFarkle); // End the turn with Farkle
+                    // Create a new turn for the next player
+                    $('#roll-btn-i').hide();
+                    return;
+                }
             }
             $('#roll-btn-i').hide();
         });
