@@ -16,6 +16,9 @@ export class Die {
         die.addEventListener('click', () => {
             this.select();
         });
+        const img = document.createElement('img');
+        img.className = 'die-image';
+        die.appendChild(img);
         const diceContainer = document.getElementById('diceContainer');
         diceContainer.appendChild(die);
         return die;
@@ -112,12 +115,22 @@ export class Die {
     }
 
     roll(val) {
+        const imagePath = {
+            1: 'images/1_Sided_Die.png',
+            2: 'images/2_Sided_Die.png',
+            3: 'images/3_Sided_Die.png',
+            4: 'images/4_Sided_Die.png',
+            5: 'images/5_Sided_Die.png',
+            6: 'images/6_Sided_Die.png'
+        };
         return new Promise(resolve => {
             const rollDuration = Math.random() * 1000 + 500; // Random duration between 500ms and 1500ms
             this.el.classList.add('realistic-roll-animation');
             setTimeout(() => {
-                this.value = val || Math.floor(Math.random() * 6) + 1;
-                this.el.textContent = this.value; // Update the displayed value
+                const value = val || Math.floor(Math.random() * 6) + 1;
+                this.value = value;
+                this.el.firstChild.src = imagePath[value]; // use image rather than text
+                //this.el.textContent = this.value; // Update the displayed value
                 this.el.classList.remove('realistic-roll-animation');
                 this.el.style.transform = 'rotate(0deg)'; // Reset rotation to 0
                 this.resolved = true; // Mark the die as resolved
