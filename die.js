@@ -108,27 +108,22 @@ export class Die {
     }
 
     show() {
-        if(this.selected || this.resolved){
-            this.el.textContent = this.value;
+        if (this.selected || this.resolved) {
+            //this.el.innerHTML = imagePath[this.value];
+            this.el.firstChild.src = imagePath[this.value]
+            //this.el.textContent = this.value;
         }
         this.el.classList.remove('hidden'); // Show the die
     }
 
     roll(val) {
-        const imagePath = {
-            1: 'images/1_Sided_Die.png',
-            2: 'images/2_Sided_Die.png',
-            3: 'images/3_Sided_Die.png',
-            4: 'images/4_Sided_Die.png',
-            5: 'images/5_Sided_Die.png',
-            6: 'images/6_Sided_Die.png'
-        };
         return new Promise(resolve => {
             const rollDuration = Math.random() * 1000 + 500; // Random duration between 500ms and 1500ms
             this.el.classList.add('realistic-roll-animation');
             setTimeout(() => {
                 const value = val || Math.floor(Math.random() * 6) + 1;
                 this.value = value;
+                //this.el.innerHTML = imagePath[value];
                 this.el.firstChild.src = imagePath[value]; // use image rather than text
                 //this.el.textContent = this.value; // Update the displayed value
                 this.el.classList.remove('realistic-roll-animation');
@@ -139,3 +134,12 @@ export class Die {
         });
     }
 }
+
+const imagePath = {
+    1: 'images/1_Side.png',
+    2: 'images/2_Side.png',
+    3: 'images/3_Side.png',
+    4: 'images/4_Side.png',
+    5: 'images/5_Side.png',
+    6: 'images/6_Side.png'
+};
