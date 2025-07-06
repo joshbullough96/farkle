@@ -114,7 +114,7 @@ export class Die {
             //this.el.textContent = this.value;
             this.el.innerHTML =  
                 `<svg width="100" height="100">
-                  <use href=${svgPath[this.value} />
+                  <use href=${svgPath[this.value]} />
                 </svg>`;
         }
         this.el.classList.remove('hidden'); // Show the die
@@ -129,7 +129,7 @@ export class Die {
                 this.value = value;
                 this.el.innerHTML =  
                     `<svg width="100" height="100">
-                      <use href=${svgPath[value} />
+                      <use href=${svgPath[value]} />
                     </svg>`;
                 //this.el.innerHTML = imagePath[value];
                 //this.el.firstChild.src = imagePath[value]; // use image rather than text
