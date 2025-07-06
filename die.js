@@ -16,9 +16,9 @@ export class Die {
         die.addEventListener('click', () => {
             this.select();
         });
-        const img = document.createElement('img');
-        img.className = 'die-image';
-        die.appendChild(img);
+        // const img = document.createElement('img');
+        // img.className = 'die-image';
+        // die.appendChild(img);
         const diceContainer = document.getElementById('diceContainer');
         diceContainer.appendChild(die);
         return die;
@@ -110,8 +110,12 @@ export class Die {
     show() {
         if (this.selected || this.resolved) {
             //this.el.innerHTML = imagePath[this.value];
-            this.el.firstChild.src = imagePath[this.value]
+            //this.el.firstChild.src = imagePath[this.value]
             //this.el.textContent = this.value;
+            this.el.innerHTML =  
+                `<svg width="100" height="100">
+                  <use href=${svgPath[this.value} />
+                </svg>`;
         }
         this.el.classList.remove('hidden'); // Show the die
     }
@@ -123,8 +127,12 @@ export class Die {
             setTimeout(() => {
                 const value = val || Math.floor(Math.random() * 6) + 1;
                 this.value = value;
+                this.el.innerHTML =  
+                    `<svg width="100" height="100">
+                      <use href=${svgPath[value} />
+                    </svg>`;
                 //this.el.innerHTML = imagePath[value];
-                this.el.firstChild.src = imagePath[value]; // use image rather than text
+                //this.el.firstChild.src = imagePath[value]; // use image rather than text
                 //this.el.textContent = this.value; // Update the displayed value
                 this.el.classList.remove('realistic-roll-animation');
                 this.el.style.transform = 'rotate(0deg)'; // Reset rotation to 0
@@ -134,6 +142,15 @@ export class Die {
         });
     }
 }
+
+const svgPath = {
+    1: "#dice-1",
+    2: "#dice-2",
+    3: "#dice-3",
+    4: "#dice-4",
+    5: "#dice-5",
+    6: "#dice-6" 
+};
 
 const imagePath = {
     1: 'images/1_Side.png',
