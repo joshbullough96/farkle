@@ -196,7 +196,7 @@ export class Turn {
         }
 
         //straight
-        const isStraight = this.selectedDice.length === 6 && this.selectedDice.every((dice, index) => dice.value === index + 1);
+        const isStraight = this.selectedDice.length === 6 && this.selectedDice.sort((a, b) => a.value - b.value).every((dice, index) => dice.value === index + 1);
         if (isStraight) {
             score += 1500; // Example score for a straight
             allowReroll();

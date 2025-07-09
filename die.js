@@ -50,7 +50,7 @@ export class Die {
         }
 
         // is part of a straight
-        const isStraight = unscoredDice.length === 6 && unscoredDice.every((dice, index) => dice.value === index + 1);
+        const isStraight = unscoredDice.length === 6 && unscoredDice.sort((a,b) => a.value - b.value).every((dice, index) => dice.value === index + 1);
         if (isStraight) {
             return false;
         }
