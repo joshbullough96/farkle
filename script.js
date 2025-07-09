@@ -100,6 +100,11 @@ $('#startBtn').click(() => {
     window.location.href = "startup.html#startup"; 
 });
 
+$('#instructionBtn').click(() => {
+    // Load instructions page
+    window.location.href = "instructions.html#instructions";
+});
+
 $('#playBtn').click(() => {
     // Load play page
     const playerCount = $('#playerCount').val();
@@ -115,6 +120,9 @@ $('#backBtn').click(() => {
     }
     if(window.location.hash == "#startup") {
         window.location.href = "index.html"; 
+    }
+    if (window.location.hash == "#instructions") {
+        window.location.href = "index.html";
     }
 });
 

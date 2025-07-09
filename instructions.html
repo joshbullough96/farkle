@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farkle Game Instructions</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        hr {
+            margin: 20px 0;
+        }
+
+        blockquote {
+            background: #f9f9f9;
+            border-left: 4px solid #ccc;
+            padding: 10px;
+            margin: 20px 0;
+        }
+
+        #container {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div id="container">
+            <aside>
+                <div>
+                    <button id="backBtn">Back</button>
+                </div>
+            </aside>
+            <h1>Farkle Game Instructions</h1>
+            <hr>
+
+            <h2>Introduction</h2>
+            <p>Farkle is a fast-paced dice game of risk and reward. Players take turns rolling six dice, collecting points based on scoring combinations, and deciding whether to bank their points or risk them for even higher rewards. The first player to reach the agreed target score wins.</p>
+
+            <h2>Objective</h2>
+            <p>Be the first player to reach the selected score by forming scoring dice combinations on each turn.</p>
+
+            <h2>Setup</h2>
+            <ol>
+                <li>Pick the number of players.</li>
+                <li>Decide on the target winning score (commonly 10,000 points).</li>
+                <li>Click play, and begin rolling!</li>
+            </ol>
+
+            <h2>Playing a Turn</h2>
+            <ol>
+                <li><strong>Roll All Six Dice:</strong> On your first roll of the turn, roll all six dice.</li>
+                <li>
+                    <strong>Check for Scoring Dice:</strong> After each roll, set aside at least one scoring die. Scoring dice are:
+                    <br />
+                    <br />
+                    <img src="./images/Scoring.jpg" alt="Scoring" width="400">
+                    <br />
+                    <br />
+                </li>
+                <li>
+                    <strong>Decide to Bank or Risk:</strong>
+                    <ul>
+                        <li><strong>Bank:</strong> End your turn and add your accumulated points to your running total.</li>
+                        <li><strong>Risk:</strong> Keep any non-scoring dice and roll the remaining dice to try for more points.</li>
+                    </ul>
+                </li>
+                <li><strong>Hot Dice:</strong> If you use all six dice in scoring combinations in one turn, you have “Hot Dice.” You may pick up all six dice and continue rolling to accumulate more points.</li>
+                <li><strong>Farkle:</strong> If you roll and no dice score, you “Farkle” and lose all unbanked points for that turn. Your turn ends immediately.</li>
+            </ol>
+
+            <!--<h2>Scoring Chart</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Combination</th>
+                    <th>Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td>Single 1</td><td>100</td></tr>
+                <tr><td>Single 5</td><td>50</td></tr>
+                <tr><td>Three 1’s</td><td>1,000</td></tr>
+                <tr><td>Three 2’s</td><td>200</td></tr>
+                <tr><td>Three 3’s</td><td>300</td></tr>
+                <tr><td>Three 4’s</td><td>400</td></tr>
+                <tr><td>Three 5’s</td><td>500</td></tr>
+                <tr><td>Three 6’s</td><td>600</td></tr>
+                <tr><td>Four of a kind</td><td>Double three-of-a-kind score</td></tr>
+                <tr><td>Five of a kind</td><td>Double four-of-a-kind score</td></tr>
+                <tr><td>Six of a kind</td><td>Double five-of-a-kind score</td></tr>
+                <tr><td>Straight (1–6)</td><td>1,500</td></tr>
+                <tr><td>Three pairs</td><td>1,500</td></tr>`
+                <tr><td>Two triplets</td><td>2,500</td></tr>
+            </tbody>
+        </table>-->
+            <!--<blockquote>
+            <p><em>Example:</em> Four 2’s = 2 × 200 = 400 points; Five 2’s = 2 × 400 = 800 points; etc.</p>
+        </blockquote>-->
+
+            <h2>Ending Your Turn</h2>
+            <ul>
+                <li>You must set aside at least one scoring die each roll.</li>
+                <li>You may end your turn at any time (after setting aside scoring dice) to bank points.</li>
+                <li>You'll need to score at least 500 points before you can start to bank, after that there is no minimum.</li>
+                <li>If you farkle, you score zero and end your turn.</li>
+            </ul>
+
+            <h2>Winning the Game</h2>
+            <p>Once a player reaches the target score, each other player gets one final turn to try and surpass that score. The highest total at the end wins.</p>
+
+            <!--<h2>Optional Variations</h2>
+        <ul>
+            <li><strong>Three Farkles Penalty:</strong> If you farkle three times in one turn, subtract 1,000 points from your total.</li>
+            <li><strong>Point Threshold to Get on Board:</strong> Require a minimum first-turn score (e.g., 500 points) before a player’s score counts.</li>
+            <li><strong>Speed Farkle:</strong> Play to a lower target score (e.g., 5,000 points) for quicker games.</li>
+        </ul>-->
+
+            <h2>Example Turn</h2>
+            <ol>
+                <li>Player 1 rolls all six dice: <strong>1, 5, 3, 3, 2, 4.</strong></li>
+                <li>They set aside the <strong>1</strong> (100) and the <strong>5</strong> (50) = 150 points. 4 dice remain.</li>
+                <li>The player rolls the remaining four dice: <strong>3, 3, 3, 2.</strong></li>
+                <li>They set aside three 3’s = 300 points. Total unbanked = 450. 1 die remains.</li>
+                <li>The player rolls the last die and gets a <strong>4</strong> (no score) → Farkle. They scores <strong>0</strong> this turn and ends.</li>
+            </ol>
+            <br />
+            <br />
+            <!--<hr>
+        <p style="text-align:center;"><em>Enjoy your game of Farkle!</em></p>-->
+        </div>
+    </main>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
