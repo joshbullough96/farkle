@@ -52,7 +52,14 @@ aside {
     margin-bottom: 2rem;
 }
 
-#top-container img {
+/*#top-container img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}*/
+
+img {
     max-width: 100%;
     height: auto;
     border-radius: 8px;
@@ -312,7 +319,7 @@ select > option {
     }
 
     button {
-        padding: 0.8rem 2rem;
+        /*padding: 0.8rem 2rem;*/
         font-size: 1rem;
     }
 
